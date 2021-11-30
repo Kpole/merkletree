@@ -1,6 +1,8 @@
 >参考：
 >
 >- [干货 | Merkle Patricia Tree 详解 » EthFans | 以太坊爱好者](https://ethfans.org/toya/articles/588)
+>- [eth.wiki](https://eth.wiki/en/fundamentals/patricia-tree)
+>- [Ethereum Merkle Patricia Trie Explained | by Leo Zhang | Medium](https://medium.com/@chiqing/merkle-patricia-trie-explained-ae3ac6a7e123)
 
 Merkle Patricia Tree（又称为Merkle Patricia Trie，简称MPT）是一种经过改良的、融合了Merkle tree和前缀树两种树结构优点的数据结构，是以太坊中用来组织管理账户数据、生成交易集合哈希的重要数据结构。
 

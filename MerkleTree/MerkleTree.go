@@ -1,4 +1,4 @@
-package src
+package MerkleTree
 
 import (
 	"bytes"
@@ -207,7 +207,7 @@ func (m *MerkleTree) verify() (bool, error) {
 
 func (m *MerkleTree) verifyContent(content Content) (bool, error) {
 	h := m.hashStrategy()
-	for _, l := range(m.Leafs) {
+	for _, l := range m.Leafs {
 		ok, err := l.C.Equal(content)
 		if err != nil {
 			return false, err
@@ -215,6 +215,7 @@ func (m *MerkleTree) verifyContent(content Content) (bool, error) {
 		if ok {
 			currentParent := l.Parent
 			for currentParent != nil {
+				h.Reset()
 				rightBytes, err := currentParent.RightSon.calculateHash()
 				if err != nil {
 					return false, nil
