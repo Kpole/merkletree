@@ -1,10 +1,11 @@
 package Trie
 
 import (
+	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"crypto/sha256"
 )
 
 var (
@@ -62,19 +63,81 @@ type Node struct {
 	Value	string
 }
 
-
-
 func (node *Node) Hash() ([]byte, error){
 	h := sha256.New()
 	for _, key := range node.Branch {
-		if _, err := h.Write(key); err != nil {
-			return nil, err
+		if len(key) != 0{
+			if _, err := h.Write(key); err != nil {
+				return nil, err
+			}
 		}
+	}
+	if node.Value != "" {
+		h.Write([]byte(node.Value))
 	}
 	node.hash = h.Sum(nil)
 	return node.hash, nil
 }
 
+func (node *Node) verifyHash(db *DB) ([]byte, error) {
+	h := sha256.New()
+	for _, key := range node.Branch {
+		if len(key) != 0 {
+			flag, err := db.Has(key)
+			if flag || err != nil {
+				return nil, err
+			}
+			son, err := db.Get(key)
+			if err != nil {
+				return nil, err
+			}
+			sonBytes, err := son.verifyHash(db)
+			if err != nil {
+				return nil, err
+			}
+			if _, err := h.Write(sonBytes); err != nil {
+				return nil, err
+			}
+		}
+	}
+	h.Write([]byte(node.Value))
+	return h.Sum(nil), nil
+}
+
+func (node *Node) Update(key string, value string, db *DB) ([]byte, error) {
+	if len(key) == 0 {
+		node.Value = value
+	} else {
+		db.Delete(node.hash)
+		var c int = (int)(key[0] - 'a')
+		flag, err := db.Has(node.Branch[c])
+		if err != nil {
+			return nil, err
+		}
+		if flag == false {
+			son := &Node{}
+			node.Branch[c], err = son.Update(key[1:], value, db)
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			son, err := db.Get(node.Branch[c])
+			if err != nil {
+				return nil, err
+			}
+			node.Branch[c], err = son.Update(key[1:], value, db)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	hash, err := node.Hash()
+	if err != nil {
+		return nil, err
+	}
+	db.Put(hash, *node)
+	return hash, nil
+}
 
 type Trie struct {
 	root Node
@@ -112,8 +175,68 @@ func (t *Trie) Get(key string, db *DB) (string, bool, error) {
 	return "", false, nil
 }
 
-func (t *Trie) Put(key string, value string) {
+func (t *Trie) Put(key string, value string, db *DB) error {
+	if _, err := t.root.Update(key, value, db); err != nil {
+		return err
+	}
+	return nil
+}
 
+
+func (t *Trie) verifyTrie(db *DB) (bool, error) {
+	calcRootHash, err := t.root.verifyHash(db)
+	if err != nil {
+		return false, nil
+	}
+	if bytes.Compare(t.root.hash, calcRootHash) == 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+func (t *Trie) proof(key string, db *DB)(*DB, bool) {
+	proofdb := NewDB()
+	node := t.root
+	if len(key) == 0 {
+		return nil, false
+	}
+	for {
+		proofdb.Put(node.hash, node)
+		if len(key) == 0 {
+			return proofdb, len(node.Value) != 0
+		}
+		c := key[0] - 'a'
+		key = key[1:]
+		if len(node.Branch[c]) == 0 {
+			return nil, false
+		}
+		flag, err := db.Has(node.Branch[c])
+		if err != nil || flag == false {
+			return nil, false
+		}
+		node, err = db.Get(node.Branch[c])
+		if err != nil {
+			return nil, false
+		}
+	}
+}
+
+func verifyProof(rootHash []byte, key string, proofdb *DB) (value string, err error) {
+	targetHash := rootHash
+	for i := 0; ; i++ {
+		if flag, err := proofdb.Has(targetHash); err != nil || flag == false {
+			return "", fmt.Errorf("proof node %d (hash %064x) missing", i, targetHash)
+		}
+		node, err := proofdb.Get(targetHash)
+		if err != nil {
+			return "", fmt.Errorf("proof node %d (hash %064x) missing", i, targetHash)
+		}
+		if i == len(key) {
+			return node.Value, nil
+		}
+		c := key[i] - 'a'
+		targetHash = node.Branch[c]
+	}
 }
 
 
