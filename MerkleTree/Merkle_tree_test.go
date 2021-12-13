@@ -87,214 +87,6 @@ var table = []struct {
 	},
 	{
 		testCaseId:          1,
-		hashStrategy:        sha256.New,
-		hashStrategyName:    "sha256",
-		contents: []Content{
-			TestSHA256Content{
-				x: "Hello",
-			},
-			TestSHA256Content{
-				x: "Hi",
-			},
-			TestSHA256Content{
-				x: "Hey",
-			},
-		},
-		notInContents: TestSHA256Content{x: "NotInTestTable"},
-		expectedHash:  []byte{189, 214, 55, 197, 35, 237, 92, 14, 171, 121, 43, 152, 109, 177, 136, 80, 194, 57, 162, 226, 56, 2, 179, 106, 255, 38, 187, 104, 251, 63, 224, 8},
-	},
-	{
-		testCaseId:          2,
-		hashStrategy:        sha256.New,
-		hashStrategyName:    "sha256",
-		contents: []Content{
-			TestSHA256Content{
-				x: "Hello",
-			},
-			TestSHA256Content{
-				x: "Hi",
-			},
-			TestSHA256Content{
-				x: "Hey",
-			},
-			TestSHA256Content{
-				x: "Greetings",
-			},
-			TestSHA256Content{
-				x: "Hola",
-			},
-		},
-		notInContents: TestSHA256Content{x: "NotInTestTable"},
-		expectedHash:  []byte{46, 216, 115, 174, 13, 210, 55, 39, 119, 197, 122, 104, 93, 144, 112, 131, 202, 151, 41, 14, 80, 143, 21, 71, 140, 169, 139, 173, 50, 37, 235, 188},
-	},
-	{
-		testCaseId:          3,
-		hashStrategy:        sha256.New,
-		hashStrategyName:    "sha256",
-		contents: []Content{
-			TestSHA256Content{
-				x: "123",
-			},
-			TestSHA256Content{
-				x: "234",
-			},
-			TestSHA256Content{
-				x: "345",
-			},
-			TestSHA256Content{
-				x: "456",
-			},
-			TestSHA256Content{
-				x: "1123",
-			},
-			TestSHA256Content{
-				x: "2234",
-			},
-			TestSHA256Content{
-				x: "3345",
-			},
-			TestSHA256Content{
-				x: "4456",
-			},
-		},
-		notInContents: TestSHA256Content{x: "NotInTestTable"},
-		expectedHash:  []byte{30, 76, 61, 40, 106, 173, 169, 183, 149, 2, 157, 246, 162, 218, 4, 70, 153, 148, 62, 162, 90, 24, 173, 250, 41, 149, 173, 121, 141, 187, 146, 43},
-	},
-	{
-		testCaseId:          4,
-		hashStrategy:        sha256.New,
-		hashStrategyName:    "sha256",
-		contents: []Content{
-			TestSHA256Content{
-				x: "123",
-			},
-			TestSHA256Content{
-				x: "234",
-			},
-			TestSHA256Content{
-				x: "345",
-			},
-			TestSHA256Content{
-				x: "456",
-			},
-			TestSHA256Content{
-				x: "1123",
-			},
-			TestSHA256Content{
-				x: "2234",
-			},
-			TestSHA256Content{
-				x: "3345",
-			},
-			TestSHA256Content{
-				x: "4456",
-			},
-			TestSHA256Content{
-				x: "5567",
-			},
-		},
-		notInContents: TestSHA256Content{x: "NotInTestTable"},
-		expectedHash:  []byte{143, 37, 161, 192, 69, 241, 248, 56, 169, 87, 79, 145, 37, 155, 51, 159, 209, 129, 164, 140, 130, 167, 16, 182, 133, 205, 126, 55, 237, 188, 89, 236},
-	},
-	{
-		testCaseId:          5,
-		hashStrategy:        md5.New,
-		hashStrategyName:    "md5",
-		contents: []Content{
-			TestMD5Content{
-				x: "Hello",
-			},
-			TestMD5Content{
-				x: "Hi",
-			},
-			TestMD5Content{
-				x: "Hey",
-			},
-			TestMD5Content{
-				x: "Hola",
-			},
-		},
-		notInContents: TestMD5Content{x: "NotInTestTable"},
-		expectedHash:  []byte{217, 158, 206, 52, 191, 78, 253, 233, 25, 55, 69, 142, 254, 45, 127, 144},
-	},
-	{
-		testCaseId:          6,
-		hashStrategy:        md5.New,
-		hashStrategyName:    "md5",
-		contents: []Content{
-			TestMD5Content{
-				x: "Hello",
-			},
-			TestMD5Content{
-				x: "Hi",
-			},
-			TestMD5Content{
-				x: "Hey",
-			},
-		},
-		notInContents: TestMD5Content{x: "NotInTestTable"},
-		expectedHash:  []byte{145, 228, 171, 107, 94, 219, 221, 171, 7, 195, 206, 128, 148, 98, 59, 76},
-	},
-	{
-		testCaseId:          7,
-		hashStrategy:        md5.New,
-		hashStrategyName:    "md5",
-		contents: []Content{
-			TestMD5Content{
-				x: "Hello",
-			},
-			TestMD5Content{
-				x: "Hi",
-			},
-			TestMD5Content{
-				x: "Hey",
-			},
-			TestMD5Content{
-				x: "Greetings",
-			},
-			TestMD5Content{
-				x: "Hola",
-			},
-		},
-		notInContents: TestMD5Content{x: "NotInTestTable"},
-		expectedHash:  []byte{167, 200, 229, 62, 194, 247, 117, 12, 206, 194, 90, 235, 70, 14, 100, 100},
-	},
-	{
-		testCaseId:          8,
-		hashStrategy:        md5.New,
-		hashStrategyName:    "md5",
-		contents: []Content{
-			TestMD5Content{
-				x: "123",
-			},
-			TestMD5Content{
-				x: "234",
-			},
-			TestMD5Content{
-				x: "345",
-			},
-			TestMD5Content{
-				x: "456",
-			},
-			TestMD5Content{
-				x: "1123",
-			},
-			TestMD5Content{
-				x: "2234",
-			},
-			TestMD5Content{
-				x: "3345",
-			},
-			TestMD5Content{
-				x: "4456",
-				// x: "4455",
-			},
-		},
-		notInContents: TestMD5Content{x: "NotInTestTable"},
-		expectedHash:  []byte{8, 36, 33, 50, 204, 197, 82, 81, 207, 74, 6, 60, 162, 209, 168, 21},
-	},
-	{
-		testCaseId:          9,
 		hashStrategy:        md5.New,
 		hashStrategyName:    "md5",
 		contents: []Content{
@@ -331,6 +123,7 @@ var table = []struct {
 	},
 }
 
+// test：构建树，并对比根节点哈希值
 func TestNewTree(t *testing.T) {
 	for i := 0; i < len(table); i ++ {
 		tree, err := newTree(table[i].contents, table[i].hashStrategy)
@@ -343,59 +136,7 @@ func TestNewTree(t *testing.T) {
 	}
 }
 
-func TestMerkleTree_MerkleRoot(t *testing.T) {
-	for i := 0; i < len(table); i++ {
-		var tree *MerkleTree
-		var err error
-		tree, err = newTree(table[i].contents, table[i].hashStrategy)
-		if err != nil {
-			t.Errorf("[case:%d] error: unexpected error: %v", table[i].testCaseId, err)
-		}
-		if bytes.Compare(tree.MerkleRootHash(), table[i].expectedHash) != 0 {
-			t.Errorf("[case:%d] error: expected hash equal to %v got %v", table[i].testCaseId, table[i].expectedHash, tree.MerkleRootHash())
-		}
-	}
-}
-
-func TestMerkleTree_RebuildTree(t *testing.T) {
-	for i := 0; i < len(table); i++ {
-		var tree *MerkleTree
-		var err error
-		tree, err = newTree(table[i].contents, table[i].hashStrategy)
-		if err != nil {
-			t.Errorf("[case:%d] error: unexpected error: %v", table[i].testCaseId, err)
-		}
-		err = tree.rebuild()
-		if err != nil {
-			t.Errorf("[case:%d] error: unexpected error:  %v", table[i].testCaseId, err)
-		}
-		if bytes.Compare(tree.MerkleRootHash(), table[i].expectedHash) != 0 {
-			t.Errorf("[case:%d] error: expected hash equal to %v got %v", table[i].testCaseId, table[i].expectedHash, tree.MerkleRootHash())
-		}
-	}
-}
-
-func TestMerkleTree_RebuildTreeWith(t *testing.T) {
-	for i := 0; i < len(table)-1; i++ {
-		if table[i].hashStrategyName != table[i+1].hashStrategyName {
-			continue
-		}
-		var tree *MerkleTree
-		var err error
-		tree, err = newTree(table[i].contents, table[i].hashStrategy)
-		if err != nil {
-			t.Errorf("[case:%d] error: unexpected error: %v", table[i].testCaseId, err)
-		}
-		err = tree.rebuildWithContent(table[i+1].contents)
-		if err != nil {
-			t.Errorf("[case:%d] error: unexpected error: %v", table[i].testCaseId, err)
-		}
-		if bytes.Compare(tree.MerkleRootHash(), table[i+1].expectedHash) != 0 {
-			t.Errorf("[case:%d] error: expected hash equal to %v got %v", table[i].testCaseId, table[i+1].expectedHash, tree.hashStrategy())
-		}
-	}
-}
-
+// test：调用verify方法检测是否通过，修改roothash后再次检测
 func TestMerkleTree_VerifyTree(t *testing.T) {
 	for i := 0; i < len(table); i++ {
 		var tree *MerkleTree
@@ -423,6 +164,7 @@ func TestMerkleTree_VerifyTree(t *testing.T) {
 	}
 }
 
+// test: 验证content，分三类：在树中（true）、在树中但修改了树根（false）、不在树中（false）
 func TestMerkleTree_VerifyContent(t *testing.T) {
 	for i := 0; i < len(table); i++ {
 		var tree *MerkleTree
@@ -482,20 +224,7 @@ func TestMerkleTree_VerifyContent(t *testing.T) {
 	}
 }
 
-func TestMerkleTree_String(t *testing.T) {
-	for i := 0; i < len(table); i++ {
-		var tree *MerkleTree
-		var err error
-		tree, err = newTree(table[i].contents, table[i].hashStrategy)
-		if err != nil {
-			t.Errorf("[case:%d] error: unexpected error: %v", table[i].testCaseId, err)
-		}
-		if tree.String() == "" {
-			t.Errorf("[case:%d] error: expected not empty string", table[i].testCaseId)
-		}
-	}
-}
-
+// test: 对每个在树上的 content 进行Merkle证明
 func TestMerkleTree_MerklePath(t *testing.T) {
 	for i := 0; i < len(table); i++ {
 		var tree *MerkleTree

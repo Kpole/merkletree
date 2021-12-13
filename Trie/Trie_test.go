@@ -5,7 +5,11 @@ import (
 	"testing"
 )
 
+/*
+Test1：测试Get、Put操作
+ */
 func TestGetPut(t *testing.T) {
+	// 尝试访问不存在的 key，得到 false
 	t.Run("should get nothing if key does not exist", func(t *testing.T) {
 		trie := NewTrie()
 		db := NewDB()
@@ -18,6 +22,7 @@ func TestGetPut(t *testing.T) {
 		}
 	})
 
+	// 尝试访问存在的键值，希望成功获得期望的结果
 	t.Run("should get value if key exist", func(t *testing.T) {
 		trie := NewTrie()
 		db := NewDB()
@@ -31,6 +36,7 @@ func TestGetPut(t *testing.T) {
 		}
 	})
 
+	// 将Trie中的key-value更新之后，希望获得更新过的值
 	t.Run("should get updated value", func(t *testing.T) {
 		trie := NewTrie()
 		db := NewDB()
@@ -46,7 +52,11 @@ func TestGetPut(t *testing.T) {
 	})
 }
 
+/*
+Test2：检测数据是否正确，即包含同样key-value集合的Trie树的根哈希值是否相等
+ */
 func TestDataIntegrity(t *testing.T) {
+	// 构造三个不同的Trie树，希望其树根哈希互不相同
 	t.Run("should get a different hash if a new key-value pair was added or updated", func(t *testing.T) {
 		db := NewDB()
 		trie := NewTrie()
@@ -70,11 +80,13 @@ func TestDataIntegrity(t *testing.T) {
 		}
 	})
 
+
+	// 构建两个Trie树，以不同的顺序插入相同的集合，希望根哈希一致
 	t.Run("should get the same hash if two tries have the identicial key-value pairs", func(t *testing.T) {
 		trie1 := NewTrie()
 		db1 := NewDB()
-		trie1.Put("abcd", "hello", db1)
 		trie1.Put("ab", "world", db1)
+		trie1.Put("abcd", "hello", db1)
 
 		trie2 := NewTrie()
 		db2 := NewDB()
@@ -90,8 +102,11 @@ func TestDataIntegrity(t *testing.T) {
 	})
 }
 
-
+/*
+Test3: 测试Merkle证明
+ */
 func TestProveAndVerifyProof(t *testing.T) {
+	// 尝试在Trie树中查找不存在的key，希望证明返回false
 	t.Run("should not generate proof for non-exist key", func(t *testing.T) {
 		tr := NewTrie()
 		trdb := NewDB()
@@ -104,6 +119,7 @@ func TestProveAndVerifyProof(t *testing.T) {
 		}
 	})
 
+	// 查询存在的数据，并希望通过根哈希可以通过该路径得到数据
 	t.Run("should generate a proof for an existing key, the proof can be verified with the merkle root hash", func(t *testing.T) {
 		tr := NewTrie()
 		trdb := NewDB()
@@ -126,19 +142,19 @@ func TestProveAndVerifyProof(t *testing.T) {
 		if val != "world" {
 			t.Errorf("val should be hello")
 		}
-
 	})
 
+	// 查询Trie中存在的数据，使用错误的树根哈希不能通过Merkle路径得到该数据。
 	t.Run("should fail the verification if the trie was updated", func(t *testing.T) {
 		tr := NewTrie()
 		trdb := NewDB()
 		tr.Put("abc", "hello", trdb)
 		tr.Put("abcde", "world", trdb)
 
-		// the hash was taken before the trie was updated
+		// Trie 更新之前的树根哈希
 		rootHash := tr.Hash()
 
-		// the proof was generated after the trie was updated
+		// 更新Trie，然后尝试证明 "abc"
 		tr.Put("efg", "trie", trdb)
 		key := "abc"
 		proofdb, ok := tr.proof(key, trdb)
@@ -146,7 +162,7 @@ func TestProveAndVerifyProof(t *testing.T) {
 			t.Errorf("abc should ok")
 		}
 
-		// should fail the verification since the merkle root hash doesn't match
+		// 根哈希不匹配，验证失败
 		_, err := verifyProof(rootHash, key, proofdb)
 		if err == nil {
 			t.Errorf("err should err")
